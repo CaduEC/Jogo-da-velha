@@ -70,7 +70,7 @@ class JogoDaVelhaVsMaquina(JogoDaVelha):
 
         if self.verificar_vitoria('O'):
             print("Você venceu!")
-        elif self.verificar_vitoria('Y'):  # Verifica se a máquina venceu com 'Y'
+        elif self.verificar_vitoria('X'):  # Verifica se a máquina venceu com 'Y'
             print("A máquina venceu!")
         else:
             print("O jogo empatou.")
