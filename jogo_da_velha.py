@@ -1,56 +1,80 @@
-class Tabuleiro:
+import random
+
+class JogoDaVelha:
     def __init__(self):
-        self.tabuleiro = [' ' for _ in range(9)]
+        self.tabuleiro = [[' ' for _ in range(3)] for _ in range(3)]
+        self.jogador_atual = 'O'
+        self.jogador_maquina = 'X'
 
-    def exibir_tabuleiro(self):
-        print()
-        for i in range(9):
-            if i % 3 == 0 and i != 0:
-                print("-------")
-            print(self.tabuleiro[i], end=' ')
-        print()
+    def imprimir_tabuleiro(self):
+        for linha in self.tabuleiro:
+            print('|'.join(linha))
+            print('-' * 5)
 
-    def jogar(self, posicao, jogador):
-        if self.tabuleiro[posicao] == ' ':
-            self.tabuleiro[posicao] = jogador
+    def fazer_jogada(self, linha, coluna):
+        if self.tabuleiro[linha][coluna] == ' ':
+            self.tabuleiro[linha][coluna] = self.jogador_atual
+            self.jogador_atual, self.jogador_maquina = self.jogador_maquina, self.jogador_atual
         else:
-            print("Essa posição já está ocupada.")
+            print("Essa posição já está ocupada. Tente novamente.")
 
-class Jogo:
+    def verificar_vitoria(self, jogador):
+        # Verificar linhas e colunas
+        for i in range(3):
+            if self.tabuleiro[i][0] == self.tabuleiro[i][1] == self.tabuleiro[i][2] == jogador:
+                return True
+            if self.tabuleiro[0][i] == self.tabuleiro[1][i] == self.tabuleiro[2][i] == jogador:
+                return True
+
+        # Verificar diagonais
+        if self.tabuleiro[0][0] == self.tabuleiro[1][1] == self.tabuleiro[2][2] == jogador:
+            return True
+        if self.tabuleiro[0][2] == self.tabuleiro[1][1] == self.tabuleiro[2][0] == jogador:
+            return True
+
+        return False
+
+    def verificar_empate(self):
+        for linha in self.tabuleiro:
+            for elemento in linha:
+                if elemento == ' ':
+                    return False
+        return True
+
+class JogoDaVelhaVsMaquina(JogoDaVelha):
     def __init__(self):
-        self.tabuleiro = Tabuleiro()
-        self.jogador_atual = 'X'
+        super().__init__()
 
-    def alternar_jogador(self):
-        self.jogador_atual = 'O' if self.jogador_atual == 'X' else 'X'
+    def fazer_jogada_maquina(self):
+        while True:
+            linha = random.randint(0, 2)
+            coluna = random.randint(0, 2)
+            if self.tabuleiro[linha][coluna] == ' ':
+                self.tabuleiro[linha][coluna] = self.jogador_maquina
+                self.jogador_atual, self.jogador_maquina = self.jogador_maquina, self.jogador_atual
+                break
 
-    def verificar_vencedor(self):
-        linhas = [[0, 1, 2], [3, 4, 5], [6, 7, 8],
-                 [0, 3, 6], [1, 4, 7], [2, 5, 8],
-                 [0, 4, 8], [2, 4, 6]]
+    def jogar(self):
+        while not self.verificar_vitoria(self.jogador_atual) and not self.verificar_empate():
+            self.imprimir_tabuleiro()
 
-        for linha in linhas:
-            if self.tabuleiro.tabuleiro[linha[0]] == self.tabuleiro.tabuleiro[linha[1]] == self.tabuleiro.tabuleiro[linha[2]] != ' ':
-                return self.tabuleiro.tabuleiro[linha[0]]
+            if self.jogador_atual == 'O':
+                linha = int(input("Digite a linha da sua jogada (0, 1 ou 2): "))
+                coluna = int(input("Digite a coluna da sua jogada (0, 1 ou 2): "))
+                self.fazer_jogada(linha, coluna)
+            else:
+                print("Vez da máquina:")
+                self.fazer_jogada_maquina()
 
-        return None
+        self.imprimir_tabuleiro()
 
-    def main(self):
-        self.tabuleiro.exibir_tabuleiro()
-        for i in range(9):
-            while True:
-                posicao = int(input(f"{self.jogador_atual}, digite a posição onde deseja jogar (0-8): "))
-                self.tabuleiro.jogar(posicao, self.jogador_atual)
-                self.tabuleiro.exibir_tabuleiro()
-                vencedor = self.verificar_vencedor()
-                if vencedor:
-                    print(f"O vencedor é o {vencedor}!")
-                    break
-                elif i == 8:
-                    print("Deu velha!")
-                    break
-                else:
-                    self.alternar_jogador()
+        if self.verificar_vitoria('O'):
+            print("Você venceu!")
+        elif self.verificar_vitoria('X'):
+            print("A máquina venceu!")
+        else:
+            print("O jogo empatou.")
 
-jogo = Jogo()
-jogo.main()
+# Exemplo de uso
+jogo_vs_maquina = JogoDaVelhaVsMaquina()
+jogo_vs_maquina.jogar()
