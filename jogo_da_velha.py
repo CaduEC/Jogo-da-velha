@@ -75,6 +75,14 @@ class JogoDaVelhaVsMaquina(JogoDaVelha):
         else:
             print("O jogo empatou.")
 
+        # Adiciona outra forma de mensagem
+        if self.verificar_vitoria('O'):
+            print("Parabéns! Você venceu!")
+        elif self.verificar_vitoria('Y'):
+            print("Você perdeu. Melhor sorte da próxima vez!")
+        else:
+            print("O jogo terminou em empate.")
+
 # Exemplo de uso
 jogo_vs_maquina = JogoDaVelhaVsMaquina()
 jogo_vs_maquina.jogar()
