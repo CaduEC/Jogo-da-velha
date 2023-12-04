@@ -3,8 +3,8 @@ import random
 class JogoDaVelha:
     def __init__(self):
         self.tabuleiro = [[' ' for _ in range(3)] for _ in range(3)]
-        self.jogador_atual = 'X'
-        self.jogador_maquina = 'O'
+        self.jogador_atual = 'O'
+        self.jogador_maquina = 'X'
 
     def imprimir_tabuleiro(self):
         for linha in self.tabuleiro:
@@ -58,7 +58,7 @@ class JogoDaVelhaVsMaquina(JogoDaVelha):
         while not self.verificar_vitoria(self.jogador_atual) and not self.verificar_empate():
             self.imprimir_tabuleiro()
 
-            if self.jogador_atual == 'X':
+            if self.jogador_atual == 'O':
                 linha = int(input("Digite a linha da sua jogada (0, 1 ou 2): "))
                 coluna = int(input("Digite a coluna da sua jogada (0, 1 ou 2): "))
                 self.fazer_jogada(linha, coluna)
@@ -68,9 +68,9 @@ class JogoDaVelhaVsMaquina(JogoDaVelha):
 
         self.imprimir_tabuleiro()
 
-        if self.verificar_vitoria('X'):
+        if self.verificar_vitoria('O'):
             print("Você venceu!")
-        elif self.verificar_vitoria('O'):
+        elif self.verificar_vitoria('X'):
             print("A máquina venceu!")
         else:
             print("O jogo empatou.")
@@ -78,3 +78,4 @@ class JogoDaVelhaVsMaquina(JogoDaVelha):
 # Exemplo de uso
 jogo_vs_maquina = JogoDaVelhaVsMaquina()
 jogo_vs_maquina.jogar()
+
