@@ -4,7 +4,7 @@ class JogoDaVelha:
     def __init__(self):
         self.tabuleiro = [[' ' for _ in range(3)] for _ in range(3)]
         self.jogador_atual = 'O'
-        self.jogador_maquina = 'X'
+        self.fazer_jogador_maquina = 'X'
 
     def imprimir_tabuleiro(self):
         for linha in self.tabuleiro:
