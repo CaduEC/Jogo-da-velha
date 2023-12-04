@@ -49,7 +49,7 @@ class JogoDaVelhaVsMaquina(JogoDaVelha):
         while True:
             linha = random.randint(0, 2)
             coluna = random.randint(0, 2)
-            if self.tabuleiro[linha][coluna] == ' ':
+            if self.tabuleiro[linha][coluna] == 'O':
                 self.tabuleiro[linha][coluna] = self.jogador_maquina
                 self.jogador_atual, self.jogador_maquina = self.jogador_maquina, self.jogador_atual
                 break
