@@ -22,17 +22,17 @@ class JogoDaVelha:
         # Verificar linhas e colunas
         for i in range(3):
             if self.tabuleiro[i][0] == self.tabuleiro[i][1] == self.tabuleiro[i][2] == jogador:
-                return True
+                return [(i, 0), (i, 1), (i, 2)]  # Retorna as posições vencedoras
             if self.tabuleiro[0][i] == self.tabuleiro[1][i] == self.tabuleiro[2][i] == jogador:
-                return True
+                return [(0, i), (1, i), (2, i)]
 
         # Verificar diagonais
         if self.tabuleiro[0][0] == self.tabuleiro[1][1] == self.tabuleiro[2][2] == jogador:
-            return True
+            return [(0, 0), (1, 1), (2, 2)]
         if self.tabuleiro[0][2] == self.tabuleiro[1][1] == self.tabuleiro[2][0] == jogador:
-            return True
+            return [(0, 2), (1, 1), (2, 0)]
 
-        return False
+        return None
 
     def verificar_empate(self):
         for linha in self.tabuleiro:
@@ -50,7 +50,7 @@ class JogoDaVelhaVsMaquina(JogoDaVelha):
             linha = random.randint(0, 2)
             coluna = random.randint(0, 2)
             if self.tabuleiro[linha][coluna] == ' ':
-                self.tabuleiro[linha][coluna] = 'X'  # Máquina usa 'X' como marcação
+                self.tabuleiro[linha][coluna] = 'Y'  # Máquina usa 'Y' como marcação
                 self.jogador_atual, self.jogador_maquina = self.jogador_maquina, self.jogador_atual
                 break
 
@@ -69,10 +69,22 @@ class JogoDaVelhaVsMaquina(JogoDaVelha):
 
             self.imprimir_tabuleiro()
 
-            if self.verificar_vitoria('O'):
-                print("Parabéns! Você venceu!")
-            elif self.verificar_vitoria('X'):
-                print("Você perdeu. Melhor sorte da próxima vez!")
+            vitoria_jogador = self.verificar_vitoria('O')
+            vitoria_maquina = self.verificar_vitoria('Y')
+
+            if vitoria_jogador or vitoria_maquina:
+                print("O jogo acabou!")
+
+                if vitoria_jogador:
+                    print("Parabéns! Você venceu!")
+                else:
+                    print("Você perdeu. Melhor sorte da próxima vez!")
+
+                # Marca a jogada vencedora no tabuleiro
+                jogada_vencedora = vitoria_jogador or vitoria_maquina
+                for linha, coluna in jogada_vencedora:
+                    self.tabuleiro[linha][coluna] = '-'  # Marca a jogada vencedora com um traço
+
             else:
                 print("O jogo terminou em empate.")
 
