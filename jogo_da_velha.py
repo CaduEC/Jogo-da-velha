@@ -1,336 +1,121 @@
-import pygame
+import random
 
-# Cores do Jogo
-preto = (0, 0, 0)
-branco = (255, 255, 255)
-vermelho = (255, 0, 0)
-verde = (0, 255, 0)
-azul = (0, 0, 255)
+class JogoDaVelha:
+    def __init__(self):
+        self.tabuleiro = [[' ' for _ in range(3)] for _ in range(3)]
+        self.jogador_atual = 'O'
+        self.jogador_maquina = 'X'
 
-# Setup da tela do Jogo
-window = pygame.display.set_mode((600, 600))
-window.fill(branco)
+    def imprimir_tabuleiro(self):
+        for linha in range(3):
+            for coluna in range(3):
+                print(f' {self.tabuleiro[linha][coluna]} ', end='')
+                if linha == 1 and coluna < 2:
+                    print('|', end='')
+            print()
+            if linha < 2:
+                print('-' * 13)
 
-# Grade do tabuleiro 
-pygame.draw.line(window, preto, (205, 50), (205, 521), 10)
-pygame.draw.line(window, preto, (365, 50), (365, 521), 10)
-pygame.draw.line(window, preto, (50, 205), (521, 205), 10)
-pygame.draw.line(window, preto, (50, 365), (521, 365), 10)
+    def fazer_jogada(self, linha, coluna):
+        if self.tabuleiro[linha][coluna] == ' ':
+            self.tabuleiro[linha][coluna] = self.jogador_atual
+            self.jogador_atual, self.jogador_maquina = self.jogador_maquina, self.jogador_atual
+        else:
+            print("Essa posição já está ocupada. Tente novamente.")
 
-# Declarando estado X ou O - Onde (1 = X) e (0 = O)
-x_ou_o = 1
-position = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+    def verificar_vitoria(self, jogador):
+        # Verificar linhas e colunas
+        for i in range(3):
+            if self.tabuleiro[i][0] == self.tabuleiro[i][1] == self.tabuleiro[i][2] == jogador:
+                return True
+            if self.tabuleiro[0][i] == self.tabuleiro[1][i] == self.tabuleiro[2][i] == jogador:
+                return True
 
-# Declarando traço final
-fim = 0
+        # Verificar diagonais
+        if self.tabuleiro[0][0] == self.tabuleiro[1][1] == self.tabuleiro[2][2] == jogador:
+            return True
+        if self.tabuleiro[0][2] == self.tabuleiro[1][1] == self.tabuleiro[2][0] == jogador:
+            return True
 
-while True:
-	for event in pygame.event.get():
-		if event.type == pygame.QUIT:
-			pygame.quit()
-			quit()
+        return False
 
-	# Declarando mouse
-	mouse = pygame.mouse.get_pos()
+    def verificar_empate(self):
+        for linha in self.tabuleiro:
+            for elemento in linha:
+                if elemento == ' ':
+                    return False
+        return True
 
-	# Declarando click do mouse
-	click = pygame.mouse.get_pressed()
+class JogoDaVelhaVsMaquina(JogoDaVelha):
+    def __init__(self):
+        super().__init__()
 
-	# Blocos de Seleção - Linha 1 - Coluna 1
-	if 50 <= mouse[0] <= 200 and 50 <= mouse[1] <= 200:
-		if click[0] == 1 and position[0] == 0 and x_ou_o == 1:
-			pygame.draw.line(window, vermelho, (100, 100), (150, 150), 10)
-			pygame.draw.line(window, vermelho, (150, 100), (100, 150), 10)
-			position[0] = 1
-			x_ou_o = 0
-		elif click[0] == 1 and position[0] == 0 and x_ou_o == 0:
-			pygame.draw.circle(window, azul, (125, 125), 25)
-			pygame.draw.circle(window, branco, (125, 125), 15)
-			position[0] = 2
-			x_ou_o = 1
+    def fazer_jogada_maquina(self):
+        while True:
+            linha = random.randint(0, 2)
+            coluna = random.randint(0, 2)
+            if self.tabuleiro[linha][coluna] == ' ':
+                self.tabuleiro[linha][coluna] = 'Y'  # Máquina usa 'Y' como marcação
+                self.jogador_atual, self.jogador_maquina = self.jogador_maquina, self.jogador_atual
+                break
 
-	# Blocos de Seleção - Linha 1 - Coluna 2
-	if 211 <= mouse[0] <= 360 and 50 <= mouse[1] <= 200:
-		if click[0] == 1 and position[1] == 0 and x_ou_o == 1:
-			pygame.draw.line(window, vermelho, (261, 100), (311, 150), 10)
-			pygame.draw.line(window, vermelho, (311, 100), (261, 150), 10)
-			position[1] = 1
-			x_ou_o = 0
-		elif click[0] == 1 and position[1] == 0 and x_ou_o == 0:
-			pygame.draw.circle(window, azul, (286, 125), 25)
-			pygame.draw.circle(window, branco, (286, 125), 15)
-			position[1] = 2
-			x_ou_o = 1
+    def marcar_jogada_vencedora(self, jogada_vencedora):
+        for linha, coluna in jogada_vencedora:
+            self.tabuleiro[linha][coluna] = '-'  # Marca a jogada vencedora com um traço
 
-	# Blocos de Seleção - Linha 1 - Coluna 3
-	if 371 <= mouse[0] <= 520 and 50 <= mouse[1] <= 200:
-		if click[0] == 1 and position[2] == 0 and x_ou_o == 1:
-			pygame.draw.line(window, vermelho, (421, 100), (471, 150), 10)
-			pygame.draw.line(window, vermelho, (471, 100), (421, 150), 10)
-			position[2] = 1
-			x_ou_o = 0
-		elif click[0] == 1 and position[2] == 0 and x_ou_o == 0:
-			pygame.draw.circle(window, azul, (446, 125), 25)
-			pygame.draw.circle(window, branco, (446, 125), 15)
-			position[2] = 2
-			x_ou_o = 1
+    def imprimir_tabuleiro_com_indicacao(self):
+        for linha in range(3):
+            for coluna in range(3):
+                if self.tabuleiro[linha][coluna] == '-':
+                    print(f'^ {self.tabuleiro[linha][coluna]} ', end='')
+                else:
+                    print(f' {self.tabuleiro[linha][coluna]} ', end='')
+                if coluna < 2:
+                    print('|', end='')
+            print()
+            if linha < 2:
+                print('-' * 13)
 
+    def jogar(self):
+        while True:  # Loop externo para permitir jogar novamente
+            while not self.verificar_vitoria(self.jogador_atual) and not self.verificar_vitoria('Y') and not self.verificar_empate():
+                self.imprimir_tabuleiro_com_indicacao()
 
-	# Blocos de Seleção - Linha 2 - Coluna 1
-	if 50 <= mouse[0] <= 200 and 211 <= mouse[1] <= 361:
-		if click[0] == 1 and position[3] == 0 and x_ou_o == 1:
-			pygame.draw.line(window, vermelho, (100, 311), (150, 261), 10)
-			pygame.draw.line(window, vermelho, (150, 311), (100, 261), 10)
-			position[3] = 1
-			x_ou_o = 0
-		elif click[0] == 1 and position[3] == 0 and x_ou_o == 0:
-			pygame.draw.circle(window, azul, (125, 286), 25)
-			pygame.draw.circle(window, branco, (125, 286), 15)
-			position[3] = 2
-			x_ou_o = 1
+                if self.jogador_atual == 'O':
+                    linha = int(input("Digite a linha da sua jogada (0, 1 ou 2): "))
+                    coluna = int(input("Digite a coluna da sua jogada (0, 1 ou 2): "))
+                    self.fazer_jogada(linha, coluna)
+                else:
+                    print("Vez da máquina:")
+                    self.fazer_jogada_maquina()
 
-	# Blocos de Seleção - Linha 2 - Coluna 2
-	if 211 <= mouse[0] <= 360 and 211 <= mouse[1] <= 361:
-		if click[0] == 1 and position[4] == 0 and x_ou_o == 1:
-			pygame.draw.line(window, vermelho, (261, 311), (311, 261), 10)
-			pygame.draw.line(window, vermelho, (311, 311), (261, 261), 10)
-			position[4] = 1
-			x_ou_o = 0
-		elif click[0] == 1 and position[4] == 0 and x_ou_o == 0:
-			pygame.draw.circle(window, azul, (286, 286), 25)
-			pygame.draw.circle(window, branco, (286, 286), 15)
-			position[4] = 2
-			x_ou_o = 1
+            self.imprimir_tabuleiro_com_indicacao()
 
-	# Blocos de Seleção - Linha 2 - Coluna 3
-	if 371 <= mouse[0] <= 520 and 211 <= mouse[1] <= 361:
-		if click[0] == 1 and position[5] == 0 and x_ou_o == 1:
-			pygame.draw.line(window, vermelho, (421, 311), (471, 261), 10)
-			pygame.draw.line(window, vermelho, (471, 311), (421, 261), 10)
-			position[5] = 1
-			x_ou_o = 0
-		elif click[0] == 1 and position[5] == 0 and x_ou_o == 0:
-			pygame.draw.circle(window, azul, (446, 286), 25)
-			pygame.draw.circle(window, branco, (446, 286), 15)
-			position[5] = 2
-			x_ou_o = 1
+            vitoria_jogador = self.verificar_vitoria('O')
+            vitoria_maquina = self.verificar_vitoria('Y')
 
+            if vitoria_jogador or vitoria_maquina:
+                print("O jogo acabou!")
 
+                if vitoria_jogador:
+                    print("Parabéns! Você venceu!")
+                    self.marcar_jogada_vencedora([(linha, coluna) for linha in range(3) for coluna in range(3) if self.tabuleiro[linha][coluna] == 'O'])
+                else:
+                    print("Você perdeu. Melhor sorte da próxima vez!")
+                    self.marcar_jogada_vencedora([(linha, coluna) for linha in range(3) for coluna in range(3) if self.tabuleiro[linha][coluna] == 'Y'])
 
-	# Blocos de Seleção - Linha 3 - Coluna 1
-	if 50 <= mouse[0] <= 200 and 371 <= mouse[1] <= 521:
-		if click[0] == 1 and position[6] == 0 and x_ou_o == 1:
-			pygame.draw.line(window, vermelho, (100, 472), (150, 422), 10)
-			pygame.draw.line(window, vermelho, (150, 472), (100, 422), 10)
-			position[6] = 1
-			x_ou_o = 0
-		elif click[0] == 1 and position[6] == 0 and x_ou_o == 0:
-			pygame.draw.circle(window, azul, (125, 447), 25)
-			pygame.draw.circle(window, branco, (125, 447), 15)
-			position[6] = 2
-			x_ou_o = 1
+            else:
+                print("O jogo terminou em empate.")
 
-	# Blocos de Seleção - Linha 3 - Coluna 2
-	if 211 <= mouse[0] <= 360 and 371 <= mouse[1] <= 521:
-		if click[0] == 1 and position[7] == 0 and x_ou_o == 1:
-			pygame.draw.line(window, vermelho, (261, 472), (311, 422), 10)
-			pygame.draw.line(window, vermelho, (311, 472), (261, 422), 10)
-			position[7] = 1
-			x_ou_o = 0
-		elif click[0] == 1 and position[7] == 0 and x_ou_o == 0:
-			pygame.draw.circle(window, azul, (286, 447), 25)
-			pygame.draw.circle(window, branco, (286, 447), 15)
-			position[7] = 2
-			x_ou_o = 1
+            # Pergunta se deseja jogar novamente
+            jogar_novamente = input("Deseja jogar novamente? (s/n): ")
+            if jogar_novamente.lower() != 's':
+                break  # Sai do loop externo se não desejar jogar novamente
 
-	# Blocos de Seleção - Linha 3 - Coluna 3
-	if 371 <= mouse[0] <= 520 and 371 <= mouse[1] <= 521:
-		if click[0] == 1 and position[8] == 0 and x_ou_o == 1:
-			pygame.draw.line(window, vermelho, (421, 472), (471, 422), 10)
-			pygame.draw.line(window, vermelho, (471, 472), (421, 422), 10)
-			position[8] = 1
-			x_ou_o = 0
-		elif click[0] == 1 and position[8] == 0 and x_ou_o == 0:
-			pygame.draw.circle(window, azul, (446, 447), 25)
-			pygame.draw.circle(window, branco, (446, 447), 15)
-			position[8] = 2
-			x_ou_o = 1
+            # Reinicializa o tabuleiro para uma nova partida
+            self.tabuleiro = [[' ' for _ in range(3)] for _ in range(3)]
+            self.jogador_atual, self.jogador_maquina = 'O', 'X'
 
-	# Traço final
-	# Linha 1 
-	if position[0] == 1 and position[1] == 1 and position[2] == 1 and fim == 0 or position[0] == 2 and position[1] == 2 and position[2] == 2 and fim == 0:
-		pygame.draw.line(window, verde, (100, 125), (470, 125), 10)
-		position[0] = 3
-		position[1] = 3
-		position[2] = 3
-		position[3] = 3
-		position[4] = 3
-		position[5] = 3
-		position[6] = 3
-		position[7] = 3
-		position[8] = 3
-		fim = 1
-	# Linha 2 
-	elif position[3] == 1 and position[4] == 1 and position[5] == 1 and fim == 0 or position[3] == 2 and position[4] == 2 and position[5] == 2 and fim == 0:
-		pygame.draw.line(window, verde, (100, 286), (470, 286), 10)
-		position[0] = 3
-		position[1] = 3
-		position[2] = 3
-		position[3] = 3
-		position[4] = 3
-		position[5] = 3
-		position[6] = 3
-		position[7] = 3
-		position[8] = 3
-		fim = 1
-	# Linha 3
-	elif position[6] == 1 and position[7] == 1 and position[8] == 1 and fim == 0 or position[6] == 2 and position[7] == 2 and position[8] == 2 and fim == 0:
-		pygame.draw.line(window, verde, (100, 447), (470, 447), 10)
-		position[0] = 3
-		position[1] = 3
-		position[2] = 3
-		position[3] = 3
-		position[4] = 3
-		position[5] = 3
-		position[6] = 3
-		position[7] = 3
-		position[8] = 3
-		fim = 1
-	# Coluna 1
-	elif position[0] == 1 and position[3] == 1 and position[6] == 1 and fim == 0 or position[0] == 2 and position[3] == 2 and position[6] == 2 and fim == 0:
-		pygame.draw.line(window, verde, (125, 100), (125, 472), 10)
-		position[0] = 3
-		position[1] = 3
-		position[2] = 3
-		position[3] = 3
-		position[4] = 3
-		position[5] = 3
-		position[6] = 3
-		position[7] = 3
-		position[8] = 3
-		fim = 1
-	# Coluna 2
-	elif position[1] == 1 and position[4] == 1 and position[7] == 1 and fim == 0 or position[1] == 2 and position[4] == 2 and position[7] == 2 and fim == 0:
-		pygame.draw.line(window, verde, (286, 100), (286, 472), 10)
-		position[0] = 3
-		position[1] = 3
-		position[2] = 3
-		position[3] = 3
-		position[4] = 3
-		position[5] = 3
-		position[6] = 3
-		position[7] = 3
-		position[8] = 3
-		fim = 1
-	# Coluna 3
-	elif position[2] == 1 and position[5] == 1 and position[8] == 1 and fim == 0 or position[2] == 2 and position[5] == 2 and position[8] == 2 and fim == 0:
-		pygame.draw.line(window, verde, (446, 100), (446, 472), 10)
-		position[0] = 3
-		position[1] = 3
-		position[2] = 3
-		position[3] = 3
-		position[4] = 3
-		position[5] = 3
-		position[6] = 3
-		position[7] = 3
-		position[8] = 3
-		fim = 1
-	# Diagonal 1
-	elif position[0] == 1 and position[4] == 1 and position[8] == 1 and fim == 0 or position[0] == 2 and position[4] == 2 and position[8] == 2 and fim == 0:
-		pygame.draw.line(window, verde, (100, 100), (471, 472), 10)
-		position[0] = 3
-		position[1] = 3
-		position[2] = 3
-		position[3] = 3
-		position[4] = 3
-		position[5] = 3
-		position[6] = 3
-		position[7] = 3
-		position[8] = 3
-		fim = 1
-	# Diagonal 2
-	elif position[2] == 1 and position[4] == 1 and position[6] == 1 and fim == 0 or position[2] == 2 and position[4] == 2 and position[6] == 2 and fim == 0:
-		pygame.draw.line(window, verde, (100, 472), (471, 100), 10)
-		position[0] = 3
-		position[1] = 3
-		position[2] = 3
-		position[3] = 3
-		position[4] = 3
-		position[5] = 3
-		position[6] = 3
-		position[7] = 3
-		position[8] = 3
-		fim = 1
-		
-	if 0 <= mouse[0] <= 600 and click[2] == 1 and fim == 1:
-		# Blocos de Seleção - Linha 1 - Coluna 1
-		pygame.draw.rect(window, branco, (50, 50, 150, 150))
-		# Blocos de Seleção - Linha 1 - Coluna 2
-		pygame.draw.rect(window, branco, (211, 50, 150, 150))
-		# Blocos de Seleção - Linha 1 - Coluna 3
-		pygame.draw.rect(window, branco, (371, 50, 150, 150))
-		# Blocos de Seleção - Linha 2 - Coluna 1
-		pygame.draw.rect(window, branco, (50, 211, 150, 150))
-		# Blocos de Seleção - Linha 2 - Coluna 2
-		pygame.draw.rect(window, branco, (211, 211, 150, 150))
-		# Blocos de Seleção - Linha 2 - Coluna 3
-		pygame.draw.rect(window, branco, (371, 211, 150, 150))
-		# Blocos de Seleção - Linha 3 - Coluna 1
-		pygame.draw.rect(window, branco, (50, 371, 150, 150))
-		# Blocos de Seleção - Linha 3 - Coluna 2
-		pygame.draw.rect(window, branco, (211, 371, 150, 150))
-		# Blocos de Seleção - Linha 3 - Coluna 3
-		pygame.draw.rect(window, branco, (371, 371, 150, 150))
-		# Grade do tabuleiro 
-		pygame.draw.line(window, preto, (205, 50), (205, 521), 10)
-		pygame.draw.line(window, preto, (365, 50), (365, 521), 10)
-		pygame.draw.line(window, preto, (50, 205), (521, 205), 10)
-		pygame.draw.line(window, preto, (50, 365), (521, 365), 10)
-		position[0] = 0
-		position[1] = 0
-		position[2] = 0
-		position[3] = 0
-		position[4] = 0
-		position[5] = 0
-		position[6] = 0
-		position[7] = 0
-		position[8] = 0
-		x_ou_o = 1
-		fim = 0
-	elif sum(position) == 13 and click[2] == 1:
-		# Blocos de Seleção - Linha 1 - Coluna 1
-		pygame.draw.rect(window, branco, (50, 50, 150, 150))
-		# Blocos de Seleção - Linha 1 - Coluna 2
-		pygame.draw.rect(window, branco, (211, 50, 150, 150))
-		# Blocos de Seleção - Linha 1 - Coluna 3
-		pygame.draw.rect(window, branco, (371, 50, 150, 150))
-		# Blocos de Seleção - Linha 2 - Coluna 1
-		pygame.draw.rect(window, branco, (50, 211, 150, 150))
-		# Blocos de Seleção - Linha 2 - Coluna 2
-		pygame.draw.rect(window, branco, (211, 211, 150, 150))
-		# Blocos de Seleção - Linha 2 - Coluna 3
-		pygame.draw.rect(window, branco, (371, 211, 150, 150))
-		# Blocos de Seleção - Linha 3 - Coluna 1
-		pygame.draw.rect(window, branco, (50, 371, 150, 150))
-		# Blocos de Seleção - Linha 3 - Coluna 2
-		pygame.draw.rect(window, branco, (211, 371, 150, 150))
-		# Blocos de Seleção - Linha 3 - Coluna 3
-		pygame.draw.rect(window, branco, (371, 371, 150, 150))
-		# Grade do tabuleiro 
-		pygame.draw.line(window, preto, (205, 50), (205, 521), 10)
-		pygame.draw.line(window, preto, (365, 50), (365, 521), 10)
-		pygame.draw.line(window, preto, (50, 205), (521, 205), 10)
-		pygame.draw.line(window, preto, (50, 365), (521, 365), 10)
-		position[0] = 0
-		position[1] = 0
-		position[2] = 0
-		position[3] = 0
-		position[4] = 0
-		position[5] = 0
-		position[6] = 0
-		position[7] = 0
-		position[8] = 0
-		x_ou_o = 1
-		fim = 0
-
-	pygame.display.update()
+# Exemplo de uso
+jogo_vs_maquina = JogoDaVelhaVsMaquina()
+jogo_vs_maquina.jogar()
