@@ -1,3 +1,8 @@
+import random
+
+class JogoDaVelha:
+    # ... (o restante do código permanece o mesmo)
+
 class JogoDaVelhaVsMaquina(JogoDaVelha):
     def __init__(self):
         super().__init__()
@@ -11,14 +16,22 @@ class JogoDaVelhaVsMaquina(JogoDaVelha):
                 self.jogador_atual, self.jogador_maquina = self.jogador_maquina, self.jogador_atual
                 break
 
+    def obter_jogada_do_usuario(self):
+        try:
+            linha = int(input("Digite a linha da sua jogada (0, 1 ou 2): "))
+            coluna = int(input("Digite a coluna da sua jogada (0, 1 ou 2): "))
+            return linha, coluna
+        except ValueError:
+            print("Entrada inválida. Por favor, digite um número.")
+            return self.obter_jogada_do_usuario()
+
     def jogar(self):
         while True:
             while not self.verificar_vitoria(self.jogador_atual) and not self.verificar_vitoria('Y') and not self.verificar_empate():
                 self.imprimir_tabuleiro()
 
                 if self.jogador_atual == 'O':
-                    linha = int(input("Digite a linha da sua jogada (0, 1 ou 2): "))
-                    coluna = int(input("Digite a coluna da sua jogada (0, 1 ou 2): "))
+                    linha, coluna = self.obter_jogada_do_usuario()
                     self.fazer_jogada(linha, coluna)
                 else:
                     print("Vez da máquina:")
