@@ -61,11 +61,10 @@ class JogoDaVelhaVsMaquina(JogoDaVelha):
     def imprimir_tabuleiro_com_indicacao(self):
         for linha in range(3):
             for coluna in range(3):
-                print(f' {self.tabuleiro[linha][coluna]} ', end='')
-                if self.tabuleiro[linha][coluna] == '-' and linha == 0:
-                    print('^', end='')
+                if self.tabuleiro[linha][coluna] == '-':
+                    print(f'^ {self.tabuleiro[linha][coluna]} ', end='')
                 else:
-                    print(' ', end='')
+                    print(f' {self.tabuleiro[linha][coluna]} ', end='')
                 print('|', end='')
             print('\n' + '-' * 13)
 
