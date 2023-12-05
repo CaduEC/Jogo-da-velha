@@ -54,10 +54,6 @@ class JogoDaVelhaVsMaquina(JogoDaVelha):
                 self.jogador_atual, self.jogador_maquina = self.jogador_maquina, self.jogador_atual
                 break
 
-    def marcar_jogada_vencedora(self, jogada_vencedora):
-        for linha, coluna in jogada_vencedora:
-            self.tabuleiro[linha][coluna] = '-'  # Marca a jogada vencedora com um traço
-
     def imprimir_tabuleiro_com_indicacao(self):
         for linha in range(3):
             for coluna in range(3):
