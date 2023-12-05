@@ -50,7 +50,7 @@ class JogoDaVelhaVsMaquina(JogoDaVelha):
             linha = random.randint(0, 2)
             coluna = random.randint(0, 2)
             if self.tabuleiro[linha][coluna] == ' ':
-                self.tabuleiro[linha][coluna] = 'Y'  # Máquina usa 'Y' como marcação
+                self.tabuleiro[linha][coluna] = 'X'  # Máquina usa 'X' como marcação
                 self.jogador_atual, self.jogador_maquina = self.jogador_maquina, self.jogador_atual
                 break
 
@@ -71,7 +71,7 @@ class JogoDaVelhaVsMaquina(JogoDaVelha):
 
             if self.verificar_vitoria('O'):
                 print("Parabéns! Você venceu!")
-            elif self.verificar_vitoria('Y'):
+            elif self.verificar_vitoria('X'):
                 print("Você perdeu. Melhor sorte da próxima vez!")
             else:
                 print("O jogo terminou em empate.")
