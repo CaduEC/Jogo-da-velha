@@ -58,10 +58,19 @@ class JogoDaVelhaVsMaquina(JogoDaVelha):
         for linha, coluna in jogada_vencedora:
             self.tabuleiro[linha][coluna] = '-'  # Marca a jogada vencedora com um traço
 
+    def imprimir_tabuleiro_com_indicacao(self):
+        for linha in range(3):
+            for coluna in range(3):
+                if self.tabuleiro[linha][coluna] == '-':
+                    print(f' -{self.tabuleiro[linha][coluna]}-', end='')
+                else:
+                    print(f'| {self.tabuleiro[linha][coluna]} ', end='')
+            print("\n-----")
+
     def jogar(self):
         while True:  # Loop externo para permitir jogar novamente
             while not self.verificar_vitoria(self.jogador_atual) and not self.verificar_vitoria('Y') and not self.verificar_empate():
-                self.imprimir_tabuleiro()
+                self.imprimir_tabuleiro_com_indicacao()
 
                 if self.jogador_atual == 'O':
                     linha = int(input("Digite a linha da sua jogada (0, 1 ou 2): "))
@@ -71,7 +80,7 @@ class JogoDaVelhaVsMaquina(JogoDaVelha):
                     print("Vez da máquina:")
                     self.fazer_jogada_maquina()
 
-            self.imprimir_tabuleiro()
+            self.imprimir_tabuleiro_com_indicacao()
 
             vitoria_jogador = self.verificar_vitoria('O')
             vitoria_maquina = self.verificar_vitoria('Y')
