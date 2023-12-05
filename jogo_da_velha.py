@@ -75,6 +75,19 @@ class JogoDaVelhaVsMaquina(JogoDaVelha):
         else:
             print("O jogo empatou.")
 
+         while True:
+        reiniciar = input('\nQuer jogar de novo? Digite S para sim ou N para não: ').lower()
+
+        if reiniciar in ('s', 'n', '"s"', '"n"'):
+            break
+        print('\nResposta inválida!')
+
+        if reiniciar == 's' or reiniciar == '"s"':
+        print('\n-----------------------------------------------------')
+        continue
+        else:
+        sys.exit(0)
+
         # Adiciona outra forma de mensagem
         if self.verificar_vitoria('O'):
             print("Parabéns! Você venceu!")
