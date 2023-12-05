@@ -22,17 +22,17 @@ class JogoDaVelha:
         # Verificar linhas e colunas
         for i in range(3):
             if self.tabuleiro[i][0] == self.tabuleiro[i][1] == self.tabuleiro[i][2] == jogador:
-                return [(i, 0), (i, 1), (i, 2)]  # Retorna as posições vencedoras
+                return True
             if self.tabuleiro[0][i] == self.tabuleiro[1][i] == self.tabuleiro[2][i] == jogador:
-                return [(0, i), (1, i), (2, i)]
+                return True
 
         # Verificar diagonais
         if self.tabuleiro[0][0] == self.tabuleiro[1][1] == self.tabuleiro[2][2] == jogador:
-            return [(0, 0), (1, 1), (2, 2)]
+            return True
         if self.tabuleiro[0][2] == self.tabuleiro[1][1] == self.tabuleiro[2][0] == jogador:
-            return [(0, 2), (1, 1), (2, 0)]
+            return True
 
-        return None
+        return False
 
     def verificar_empate(self):
         for linha in self.tabuleiro:
@@ -54,14 +54,20 @@ class JogoDaVelhaVsMaquina(JogoDaVelha):
                 self.jogador_atual, self.jogador_maquina = self.jogador_maquina, self.jogador_atual
                 break
 
+    def marcar_jogada_vencedora(self, jogada_vencedora):
+        for linha, coluna in jogada_vencedora:
+            self.tabuleiro[linha][coluna] = '-'  # Marca a jogada vencedora com um traço
+
     def imprimir_tabuleiro_com_indicacao(self):
         for linha in range(3):
             for coluna in range(3):
-                if self.tabuleiro[linha][coluna] == '-':
-                    print(f' -{self.tabuleiro[linha][coluna]}-', end='')
+                print(f' {self.tabuleiro[linha][coluna]} ', end='')
+                if self.tabuleiro[linha][coluna] == '-' and linha == 0:
+                    print('^', end='')
                 else:
-                    print(f'| {self.tabuleiro[linha][coluna]} ', end='')
-            print("\n-----")
+                    print(' ', end='')
+                print('|', end='')
+            print('\n' + '-' * 13)
 
     def jogar(self):
         while True:  # Loop externo para permitir jogar novamente
@@ -86,10 +92,10 @@ class JogoDaVelhaVsMaquina(JogoDaVelha):
 
                 if vitoria_jogador:
                     print("Parabéns! Você venceu!")
-                    self.marcar_jogada_vencedora(vitoria_jogador)
+                    self.marcar_jogada_vencedora([(linha, coluna) for linha in range(3) for coluna in range(3) if self.tabuleiro[linha][coluna] == 'O'])
                 else:
                     print("Você perdeu. Melhor sorte da próxima vez!")
-                    self.marcar_jogada_vencedora(vitoria_maquina)
+                    self.marcar_jogada_vencedora([(linha, coluna) for linha in range(3) for coluna in range(3) if self.tabuleiro[linha][coluna] == 'Y'])
 
             else:
                 print("O jogo terminou em empate.")
