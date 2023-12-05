@@ -54,6 +54,10 @@ class JogoDaVelhaVsMaquina(JogoDaVelha):
                 self.jogador_atual, self.jogador_maquina = self.jogador_maquina, self.jogador_atual
                 break
 
+    def marcar_jogada_vencedora(self, jogada_vencedora):
+        for linha, coluna in jogada_vencedora:
+            self.tabuleiro[linha][coluna] = '-'  # Marca a jogada vencedora com um traço
+
     def jogar(self):
         while True:  # Loop externo para permitir jogar novamente
             while not self.verificar_vitoria(self.jogador_atual) and not self.verificar_vitoria('Y') and not self.verificar_empate():
@@ -77,13 +81,10 @@ class JogoDaVelhaVsMaquina(JogoDaVelha):
 
                 if vitoria_jogador:
                     print("Parabéns! Você venceu!")
+                    self.marcar_jogada_vencedora(vitoria_jogador)
                 else:
                     print("Você perdeu. Melhor sorte da próxima vez!")
-
-                # Marca a jogada vencedora no tabuleiro
-                jogada_vencedora = vitoria_jogador or vitoria_maquina
-                for linha, coluna in jogada_vencedora:
-                    self.tabuleiro[linha][coluna] = '-'  # Marca a jogada vencedora com um traço
+                    self.marcar_jogada_vencedora(vitoria_maquina)
 
             else:
                 print("O jogo terminou em empate.")
