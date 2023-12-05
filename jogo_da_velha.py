@@ -56,7 +56,7 @@ class JogoDaVelhaVsMaquina(JogoDaVelha):
 
     def jogar(self):
         while True:  # Loop externo para permitir jogar novamente
-            while not self.verificar_vitoria(self.jogador_atual) and not self.verificar_vitoria('Y') and not self.verificar_empate():
+            while not self.verificar_vitoria(self.jogador_atual) and not self.verificar_vitoria('X') and not self.verificar_empate():
                 self.imprimir_tabuleiro()
 
                 if self.jogador_atual == 'O':
