@@ -2,40 +2,51 @@ import random
 
 class JogoDaVelha:
     def __init__(self):
-        self.tabuleiro = [[' ' for _ in range(3)] for _ in range(3)]
-        self.jogador_atual = 'O'
-        self.jogador_maquina = 'X'
+        self.__tabuleiro = [[' ' for _ in range(3)] for _ in range(3)]
+        self.__jogador_atual = 'O'
+        self.__jogador_maquina = 'X'
+
+    @property
+    def tabuleiro(self):
+        return self.__tabuleiro
+
+    @property
+    def jogador_atual(self):
+        return self.__jogador_atual
+
+    def __alternar_jogador(self):
+        self.__jogador_atual = 'X' if self.__jogador_atual == 'O' else 'O'
 
     def imprimir_tabuleiro(self):
-        for linha in self.tabuleiro:
+        for linha in self.__tabuleiro:
             print('|'.join(linha))
             print('-' * 5)
 
     def fazer_jogada(self, linha, coluna):
-        if self.tabuleiro[linha][coluna] == ' ':
-            self.tabuleiro[linha][coluna] = self.jogador_atual
-            self.jogador_atual, self.jogador_maquina = self.jogador_maquina, self.jogador_atual
+        if self.__tabuleiro[linha][coluna] == ' ':
+            self.__tabuleiro[linha][coluna] = self.__jogador_atual
+            self.__alternar_jogador()
         else:
             print("Essa posição já está ocupada. Tente novamente.")
 
     def verificar_vitoria(self, jogador):
         # Verificar linhas e colunas
         for i in range(3):
-            if self.tabuleiro[i][0] == self.tabuleiro[i][1] == self.tabuleiro[i][2] == jogador:
+            if self.__tabuleiro[i][0] == self.__tabuleiro[i][1] == self.__tabuleiro[i][2] == jogador:
                 return True
-            if self.tabuleiro[0][i] == self.tabuleiro[1][i] == self.tabuleiro[2][i] == jogador:
+            if self.__tabuleiro[0][i] == self.__tabuleiro[1][i] == self.__tabuleiro[2][i] == jogador:
                 return True
 
         # Verificar diagonais
-        if self.tabuleiro[0][0] == self.tabuleiro[1][1] == self.tabuleiro[2][2] == jogador:
+        if self.__tabuleiro[0][0] == self.__tabuleiro[1][1] == self.__tabuleiro[2][2] == jogador:
             return True
-        if self.tabuleiro[0][2] == self.tabuleiro[1][1] == self.tabuleiro[2][0] == jogador:
+        if self.__tabuleiro[0][2] == self.__tabuleiro[1][1] == self.__tabuleiro[2][0] == jogador:
             return True
 
         return False
 
     def verificar_empate(self):
-        for linha in self.tabuleiro:
+        for linha in self.__tabuleiro:
             for elemento in linha:
                 if elemento == ' ':
                     return False
@@ -51,12 +62,12 @@ class JogoDaVelhaVsMaquina(JogoDaVelha):
             coluna = random.randint(0, 2)
             if self.tabuleiro[linha][coluna] == ' ':
                 self.tabuleiro[linha][coluna] = 'X'  # Máquina usa 'X' como marcação
-                self.jogador_atual, self.jogador_maquina = self.jogador_maquina, self.jogador_atual
+                self._JogoDaVelha__alternar_jogador()
                 break
 
     def jogar(self):
         while True:  # Loop externo para permitir jogar novamente
-            while not self.verificar_vitoria(self.jogador_atual) and not self.verificar_vitoria('X') and not self.verificar_empate():
+            while not self.verificar_vitoria('O') and not self.verificar_vitoria('X') and not self.verificar_empate():
                 self.imprimir_tabuleiro()
 
                 if self.jogador_atual == 'O':
@@ -82,9 +93,9 @@ class JogoDaVelhaVsMaquina(JogoDaVelha):
                 break  # Sai do loop externo se não desejar jogar novamente
 
             # Reinicializa o tabuleiro para uma nova partida
-            self.tabuleiro = [[' ' for _ in range(3)] for _ in range(3)]
-            self.jogador_atual, self.jogador_maquina = 'O', 'X'
+            self._JogoDaVelha__tabuleiro = [[' ' for _ in range(3)] for _ in range(3)]
+            self._JogoDaVelha__jogador_atual = 'O'
 
 # Exemplo de uso
 jogo_vs_maquina = JogoDaVelhaVsMaquina()
-jogo_vs_maquina.jogar() 
+jogo_vs_maquina.jogar()
